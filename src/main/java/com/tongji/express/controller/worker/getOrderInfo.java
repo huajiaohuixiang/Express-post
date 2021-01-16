@@ -59,7 +59,7 @@ public class getOrderInfo {
                     while (rs.next()) {// 转换每行的返回值到Map中
                         Map rowMap = new HashMap();
                         rowMap.put("senderName", rs.getString("sender_name"));
-                        rowMap.put("senderPhone", rs.getString("sender_address"));
+                        rowMap.put("senderPhone", rs.getString("sender_phone"));
                         rowMap.put("senderAddress",rs.getString("sender_address"));
                         rowMap.put("company",rs.getString("company"));
                         rowMap.put("receiverName",rs.getString("receiver_name"));
@@ -124,55 +124,32 @@ public class getOrderInfo {
     }
     @GetMapping("/worker/updateStatus")
     public Integer updateOrderStatus(@RequestParam("id")String id,@RequestParam("status")String status,@RequestParam("phone")String phone){
-        System.out.println(id);
-        System.out.println(status);
-        Message lastest=messageMapper.lastMessage();
-        int newID=Integer.parseInt(lastest.getMessageId());
-        newID+=1;
-        LocalDate now = LocalDate.now();
-        if(status.equals("已分配")){
-            //messageMapper.addMessage(String.valueOf(newID),now.toString(),phone,"您的寄件订单已被分配，快递员"+employeeId+"将在您预约时间内上门，上门后给取件码4410，为安全取件，建议与快递小哥电话联系","寄件消息","已发送");
-
-        }else if(status.equals("已接单")){
-            messageMapper.addMessage(String.valueOf(newID),now.toString(),phone,"您的寄件订单已接单","寄件消息","已发送");
-
-        }else if(status.equals("已完成")){
-            //   messageMapper.addMessage(String.valueOf(newID),now.toString(),phone,"您的寄件订单已完成","寄件消息","已发送");
-
-        }else if(status.equals("已取消")){
-            messageMapper.addMessage(String.valueOf(newID),now.toString(),phone,"您的寄件订单已取消","寄件消息","已发送");
-
-        }else{
-            System.out.println("状态输入错误");
+        try {
+            this.jdbcTemplate.execute("call updateOrderStatusForJdbc('"+id+"','"+status+"','"+phone+"')");
+            return 1;
+        }catch (Exception e){
+            e.printStackTrace();
+            return 0;
         }
-        return ordermapper.UpdateOrderState(id,status);
-
     }
     @GetMapping("/worker/updateOK")
     public Integer updateOrderOK(@RequestParam("id")String id,@RequestParam("status")String status,@RequestParam("phone")String phone,@RequestParam("employeeID")String employeeID){
-        System.out.println(id);
-        System.out.println(status);
-        Message lastest=messageMapper.lastMessage();
-        int newID=Integer.valueOf(lastest.getMessageId());
-        newID+=1;
-        LocalDate now = LocalDate.now();
-        messageMapper.addMessage(String.valueOf(newID),now.toString(),phone,"您的寄件订单已完成","寄件消息","已发送");
-        employeeMapper.dispatcherEmployee(employeeID,"空闲");
-        return ordermapper.UpdateOrderState(id,status);
-
+        try {
+            this.jdbcTemplate.execute("call updateOrderCompleteForJdbc('"+id+"','"+status+"','"+phone+"','"+employeeID+"')");
+            return 1;
+        }catch (Exception e){
+            e.printStackTrace();
+            return 0;
+        }
     }
     @GetMapping("/worker/updateOrderEmployee")
     public Integer updateOrderEmployee(@RequestParam("id")String id,@RequestParam("employeeId")String employeeId,@RequestParam("phone")String phone){
-        System.out.println(id);
-        System.out.println(employeeId);
-        Message lastest=messageMapper.lastMessage();
-        int newID=Integer.valueOf(lastest.getMessageId());
-        newID+=1;
-        LocalDate dateTime = LocalDate.now();
-        System.out.println(phone);
-        messageMapper.addMessage(String.valueOf(newID),dateTime.toString(),phone,"您的寄件订单已被分配，快递员"+employeeId+"将在您预约时间内上门，上门后给取件码4410，为安全取件，建议与快递小哥电话联系","寄件消息","已发送");
-        ordermapper.UpdateOrderState(id,"已分配");
-        return ordermapper.UpdateOrderEmployee(id,employeeId);
-
+        try {
+            this.jdbcTemplate.execute("call updateOrderEmployeeForJdbc('"+id+"','"+employeeId+"','"+phone+"')");
+            return 1;
+        }catch (Exception e){
+            e.printStackTrace();
+            return 0;
+        }
     }
 }
