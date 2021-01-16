@@ -105,16 +105,18 @@ public class getOrderInfo {
         System.out.println(pagesize);
         return  ordermapper.getSomeOrder(status,pageindex,pagesize);
     }
+
     @PostMapping("/worker/updateOrder")
     public Integer UpdateOrder(@RequestBody ExOrder order){
-        System.out.println(order);
-        System.out.println(order.getCompany());
-        System.out.println(order.getOrderId());
-        System.out.println(order.getSenderName());
-        System.out.println(order.getReceiverAddress()  );
-        System.out.println();
-        return ordermapper.UpdateOrder1(order.getOrderId(),order.getSenderName(),order.getSendPhone(),order.getReceiverName(),order.getReceiverPhone(),order.getReceiverAddress(),order.getCompany(),order.getEmployeeId(),order.getStatus());
-        //return ordermapper.UpdateOrder(order);
+        try {
+            this.jdbcTemplate.execute("call updateOrder('"+order.getOrderId()+"','"+order.getSenderName()+"','"+order.getSendPhone()+"','"+order.getReceiverName()+"','"+order.getReceiverPhone()+"','"+order.getReceiverAddress()+"','"+order.getCompany()+"','"+order.getEmployeeId()+"','"+order.getStatus()+"')");
+            return 1;
+        }catch (Exception e){
+            e.printStackTrace();
+            return 0;
+        }
+//        return ordermapper.UpdateOrder1(order.getOrderId(),order.getSenderName(),order.getSendPhone(),order.getReceiverName(),order.getReceiverPhone(),order.getReceiverAddress(),order.getCompany(),order.getEmployeeId(),order.getStatus());
+//        //return ordermapper.UpdateOrder(order);
     }
 
     @DeleteMapping("/worker/deleteOrder")
@@ -122,6 +124,7 @@ public class getOrderInfo {
         return ordermapper.delOrder(id);
 
     }
+
     @GetMapping("/worker/updateStatus")
     public Integer updateOrderStatus(@RequestParam("id")String id,@RequestParam("status")String status,@RequestParam("phone")String phone){
         try {
@@ -132,6 +135,7 @@ public class getOrderInfo {
             return 0;
         }
     }
+
     @GetMapping("/worker/updateOK")
     public Integer updateOrderOK(@RequestParam("id")String id,@RequestParam("status")String status,@RequestParam("phone")String phone,@RequestParam("employeeID")String employeeID){
         try {
@@ -141,6 +145,17 @@ public class getOrderInfo {
             e.printStackTrace();
             return 0;
         }
+    }
+    @GetMapping("/worker/createNCoupons")
+    public Integer createaNCoupons(@RequestParam("N")Integer N, @RequestParam("date")String date, @RequestParam("amount")float amount){
+        try {
+            this.jdbcTemplate.execute("call createNCoupon('"+N+"','"+date+"','"+amount+"')");
+            return 1;
+        }catch (Exception e){
+            e.printStackTrace();
+            return 0;
+        }
+
     }
     @GetMapping("/worker/updateOrderEmployee")
     public Integer updateOrderEmployee(@RequestParam("id")String id,@RequestParam("employeeId")String employeeId,@RequestParam("phone")String phone){
