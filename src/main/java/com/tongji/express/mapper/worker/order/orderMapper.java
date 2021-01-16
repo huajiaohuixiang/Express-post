@@ -4,10 +4,12 @@ package com.tongji.express.mapper.worker.order;
 import com.tongji.express.entity.ExOrder;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.mapping.StatementType;
+import org.springframework.stereotype.Repository;
 
 import java.util.LinkedList;
 
 @Mapper
+@Repository
 public interface orderMapper {
     @Select("select * from Ex_Order where order_id=#{id}")
     public ExOrder getOrderById(String id);

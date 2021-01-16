@@ -6,11 +6,13 @@ import com.tongji.express.entity.ExOrder;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+import org.springframework.stereotype.Repository;
 
 import java.util.LinkedList;
 
 
 @Mapper
+@Repository
 public interface AdministratorMapper {
     @Select("select * from Administrator order by cast(EMPLOYEE_ID as int)")
     public LinkedList<Administrator> getAdministrator();

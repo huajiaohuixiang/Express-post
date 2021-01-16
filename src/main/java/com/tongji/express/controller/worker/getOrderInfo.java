@@ -60,6 +60,17 @@ public class getOrderInfo {
                         Map rowMap = new HashMap();
                         rowMap.put("senderName", rs.getString("sender_name"));
                         rowMap.put("senderPhone", rs.getString("sender_address"));
+                        rowMap.put("senderAddress",rs.getString("sender_address"));
+                        rowMap.put("company",rs.getString("company"));
+                        rowMap.put("receiverName",rs.getString("receiver_name"));
+                        rowMap.put("receiverAddress",rs.getString("receiver_address"));
+                        rowMap.put("receiverPhone",rs.getString("receiver_phone"));
+                        rowMap.put("packageContent",rs.getString("package_content"));
+                        rowMap.put("orderDate",rs.getDate("order_date"));
+                        rowMap.put("weight",rs.getDouble("weight"));
+                        rowMap.put("status",rs.getString("status"));
+                        rowMap.put("employeeId",rs.getString("employee_id"));
+                        rowMap.put("orderId",rs.getInt("order_id"));
                         resultsMap.add(rowMap);
                     }
                     rs.close();
@@ -116,19 +127,19 @@ public class getOrderInfo {
         System.out.println(id);
         System.out.println(status);
         Message lastest=messageMapper.lastMessage();
-        int newID=Integer.valueOf(lastest.getMessageId());
+        int newID=Integer.parseInt(lastest.getMessageId());
         newID+=1;
         LocalDate now = LocalDate.now();
-        if(status=="已分配"){
+        if(status.equals("已分配")){
             //messageMapper.addMessage(String.valueOf(newID),now.toString(),phone,"您的寄件订单已被分配，快递员"+employeeId+"将在您预约时间内上门，上门后给取件码4410，为安全取件，建议与快递小哥电话联系","寄件消息","已发送");
 
         }else if(status.equals("已接单")){
             messageMapper.addMessage(String.valueOf(newID),now.toString(),phone,"您的寄件订单已接单","寄件消息","已发送");
 
-        }else if(status=="已完成"){
+        }else if(status.equals("已完成")){
             //   messageMapper.addMessage(String.valueOf(newID),now.toString(),phone,"您的寄件订单已完成","寄件消息","已发送");
 
-        }else if(status=="已取消"){
+        }else if(status.equals("已取消")){
             messageMapper.addMessage(String.valueOf(newID),now.toString(),phone,"您的寄件订单已取消","寄件消息","已发送");
 
         }else{

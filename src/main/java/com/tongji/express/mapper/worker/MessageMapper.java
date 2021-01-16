@@ -4,14 +4,16 @@ package com.tongji.express.mapper.worker;
 
 import com.tongji.express.entity.Message;
 import org.apache.ibatis.annotations.*;
+import org.springframework.stereotype.Repository;
 
 import java.util.LinkedList;
 
 @Mapper
+@Repository
 public interface MessageMapper {
 
     @Select("select * from message order by cast(message_id as int)")
-    public LinkedList<Message> getMessage();
+    LinkedList<Message> getMessage();
 
     @Select("select * from message where user_id=#{id} order by cast(message_id as int)")
     LinkedList<Message> getMyMessage(String id);

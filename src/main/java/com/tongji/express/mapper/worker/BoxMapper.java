@@ -5,11 +5,13 @@ import com.tongji.express.entity.Box;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+import org.springframework.stereotype.Repository;
 
 
 import java.util.LinkedList;
 
 @Mapper
+@Repository
 public interface BoxMapper  {
     @Select("select count(*) from box where cupboard_ID=#{id} and state='success'")
     public int getSum(String id);

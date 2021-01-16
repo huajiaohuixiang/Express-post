@@ -3,11 +3,13 @@ package com.tongji.express.mapper.worker;
 
 import com.tongji.express.entity.Employee;
 import org.apache.ibatis.annotations.*;
+import org.springframework.stereotype.Repository;
 
 import java.util.LinkedList;
 import java.util.Map;
 
 @Mapper
+@Repository
 public interface EmployeeMapper {
     @Select("select * from employee order by cast(EMPLOYEE_ID as int)")
     public LinkedList<Employee> getEmployee();
