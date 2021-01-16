@@ -1,7 +1,5 @@
 package com.tongji.express.mapper.worker;
 
-
-
 import com.tongji.express.entity.Message;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
