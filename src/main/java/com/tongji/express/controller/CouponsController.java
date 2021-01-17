@@ -1,6 +1,10 @@
 package com.tongji.express.controller;
 
+import com.tongji.express.entity.CouponStore;
+import com.tongji.express.mapper.worker.GetCouponsMapper;
+import com.tongji.express.result.State;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.jdbc.core.CallableStatementCallback;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +19,6 @@ import java.util.Map;
 
 @RestController
 @CrossOrigin
-
 public class CouponsController {
     @Autowired
     JdbcTemplate jdbcTemplate;
@@ -46,10 +49,6 @@ public class CouponsController {
                     ResultSet rs = (ResultSet) cs.getObject(1);// 获取游标一行的值
                     while (rs.next()) {// 转换每行的返回值到Map中
                         Map rowMap = new HashMap();
-//BATCH_ID
-//DUE_DATE
-//AMOUNT
-//NUM
                         rowMap.put("BATCH_ID", rs.getString("BATCH_ID"));
                         rowMap.put("DUE_DATE", rs.getString("DUE_DATE"));
                         rowMap.put("AMOUNT",rs.getString("AMOUNT"));
@@ -87,6 +86,43 @@ return list;
                     return resultsMap;
                 });
         return list;
+    }
+
+    @Autowired
+    RedisTemplate<String,String> redisTemplate;
+    @Autowired
+    GetCouponsMapper getCouponsMapper;
+    @GetMapping("/startGrab")
+    public State StartGrab(){
+        try{
+            ArrayList<CouponStore> arr=getCouponsMapper.query();
+            for(CouponStore c : arr){
+                redisTemplate.opsForValue().set(c.getBatchID(),c.getNum()+"");
+            }
+            return State.success;
+        }catch(Exception e){
+                e.printStackTrace();
+                return State.fail;
+            }
+    }
+
+    @GetMapping("/grabCoupons1")
+    public Integer grabCoupons1(@RequestParam("userid")String userid,@RequestParam("batch_id")String batch_id){
+        long stock=redisTemplate.opsForValue().decrement(batch_id);
+        if(stock<0)
+        {
+            redisTemplate.opsForValue().increment(batch_id);
+            return 0;
+        }
+        try {
+            this.jdbcTemplate.execute("call grabCoupon('"+userid+"','"+batch_id+"')");
+            return 1;
+        }catch (Exception e){
+            e.printStackTrace();
+            System.out.println("-----秒杀失败-----");
+            redisTemplate.opsForValue().increment(batch_id);
+            return 0;
+        }
     }
 
     @GetMapping("/grabCoupons")

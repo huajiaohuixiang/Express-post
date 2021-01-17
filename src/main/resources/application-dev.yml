@@ -1,0 +1,23 @@
+spring:
+  datasource:
+    driver-class-name: com.timesten.jdbc.TimesTenDriver
+    url: jdbc:timesten:client:ttc_server=8.133.185.160;tcp_port=53397;ttc_server_dsn=my_ttdb;uid=test;pwd=test
+
+
+
+mybatis:
+  type-aliases-package: com.tongji.express.entity
+  configuration:
+    map-underscore-to-camel-case: true
+  mapper-locations: com.tongji.express.mapper
+
+
+mybatis-plus:
+  type-aliases-package: com.tongji.express.entity
+  configuration:
+    map-underscore-to-camel-case: true
+
+
+logging:
+  level:
+    com.tongji.express.mapper: DEBUG
