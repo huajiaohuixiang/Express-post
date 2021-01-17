@@ -115,7 +115,7 @@ return list;
             return 0;
         }
         try {
-            this.jdbcTemplate.execute("call grabCoupon('"+userid+"','"+batch_id+"')");
+            this.jdbcTemplate.execute("call grabCoupon1('"+userid+"','"+batch_id+"')");
             return 1;
         }catch (Exception e){
             e.printStackTrace();
