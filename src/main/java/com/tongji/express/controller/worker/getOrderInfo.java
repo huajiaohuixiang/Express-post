@@ -146,18 +146,7 @@ public class getOrderInfo {
             return 0;
         }
     }
-    @GetMapping("/worker/createNCoupons")
-    public Integer createaNCoupons(@RequestParam("N")Integer N, @RequestParam("date")String date, @RequestParam("amount")float amount){
-        try {
-            this.jdbcTemplate.execute("call createNCoupon('"+N+"','"+date+"','"+amount+"')");
-            return 1;
-        }catch (Exception e){
-            e.printStackTrace();
-            return 0;
-        }
-
-    }
-    @GetMapping("/worker/updateOrderEmployee")
+   @GetMapping("/worker/updateOrderEmployee")
     public Integer updateOrderEmployee(@RequestParam("id")String id,@RequestParam("employeeId")String employeeId,@RequestParam("phone")String phone){
         try {
             this.jdbcTemplate.execute("call updateOrderEmployeeForJdbc('"+id+"','"+employeeId+"','"+phone+"')");
