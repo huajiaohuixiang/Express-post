@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
 @RestController
 @CrossOrigin
 public class CouponsController {
@@ -32,7 +33,6 @@ public class CouponsController {
             e.printStackTrace();
             return 0;
         }
-
     }
     @GetMapping("/showCoupons")
     public List<Map<String, Object>> showCoupons(){
