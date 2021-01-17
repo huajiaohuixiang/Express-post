@@ -69,7 +69,7 @@ public class AdminInfo {
             map.put("position",pos);
             //不管之前有没有，生成新token加入redis或者替换老token
             String newToken= JwtUtils.genJsonWebToken(account);
-            redisTemplate.opsForValue().set(account.getUserID(),newToken);
+            //redisTemplate.opsForValue().set(account.getUserID(),newToken);
             map.put("Token", newToken);
             return  map;
         }

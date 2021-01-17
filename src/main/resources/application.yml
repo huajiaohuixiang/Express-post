@@ -15,6 +15,16 @@ spring:
         min-idle: 0
 
 
+server:
+  port: 9999
+  ssl:
+    key-store: classpath:4911900_www.csystd.cn.pfx
+    key-store-password: 5doDH01I
+    key-store-type: PKCS12
+    enabled: true
+
+
+
 mybatis:
   type-aliases-package: com.tongji.express.entity
   configuration:
