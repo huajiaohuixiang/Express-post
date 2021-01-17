@@ -1,8 +1,13 @@
 package com.tongji.express.controller;
 
+import com.timesten.jdbc.JdbcOdbcStatement;
+import com.timesten.jdbc.TimesTenConnection;
+import com.timesten.jdbc.TimesTenDataSource;
+import com.tongji.express.ExpressApplication;
 import com.tongji.express.entity.CouponStore;
 import com.tongji.express.mapper.worker.GetCouponsMapper;
 import com.tongji.express.result.State;
+import org.hibernate.boot.model.relational.AuxiliaryDatabaseObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.jdbc.core.CallableStatementCallback;
@@ -109,7 +114,7 @@ return list;
     @GetMapping("/grabCoupons1")
     public Integer grabCoupons1(@RequestParam("userid")String userid,@RequestParam("batch_id")String batch_id){
         long stock=redisTemplate.opsForValue().decrement(batch_id);
-        System.out.println("-------"+stock+"----------");
+        //System.out.println("-------"+stock+"----------");
         if(stock<0)
         {
             redisTemplate.opsForValue().increment(batch_id);
@@ -124,6 +129,35 @@ return list;
             return 0;
         }
     }
+
+
+    @GetMapping("/grabCoupons2")
+    public Integer grabCoupons2(@RequestParam("userid")String userid,@RequestParam("batch_id")String batch_id){
+        long stock=redisTemplate.opsForValue().decrement(batch_id);
+        //System.out.println("-------"+stock+"----------");
+        if(stock<0)
+        {
+            redisTemplate.opsForValue().increment(batch_id);
+            return 0;
+        }
+        try {
+            TimesTenConnection ttcon = (TimesTenConnection) ExpressApplication.ttds
+                    .getConnection();
+            CallableStatement callableStatement= ttcon.prepareCall("{call grabcoupon1(?,?)}");
+            callableStatement.setString(1,userid);
+            callableStatement.setString(2,batch_id);
+            callableStatement.execute();
+            ttcon.close();
+            return 1;
+        }catch (Exception e){
+            e.printStackTrace();
+            System.out.println("-----秒杀失败-----");
+            redisTemplate.opsForValue().increment(batch_id);
+            return 0;
+        }
+
+    }
+
 
     @GetMapping("/grabCoupons")
     public Integer grabCoupons(@RequestParam("userid")String userid,@RequestParam("batch_id")String batch_id){
