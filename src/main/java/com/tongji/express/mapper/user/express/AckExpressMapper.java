@@ -14,6 +14,6 @@ import java.sql.Date;
 @Repository
 public interface AckExpressMapper {
 
-    @Update("update package set status=0,receive_date=#{date} where package_id=#{id}")
+    @Update("update package set status=1,receive_date=#{date} where package_id=#{id}")
     int ackExpress(@Param("id")String id,@Param("date") Date date);
 }
