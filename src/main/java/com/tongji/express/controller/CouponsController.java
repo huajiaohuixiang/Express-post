@@ -109,6 +109,7 @@ return list;
     @GetMapping("/grabCoupons1")
     public Integer grabCoupons1(@RequestParam("userid")String userid,@RequestParam("batch_id")String batch_id){
         long stock=redisTemplate.opsForValue().decrement(batch_id);
+        System.out.println("-------"+stock+"----------");
         if(stock<0)
         {
             redisTemplate.opsForValue().increment(batch_id);
@@ -118,7 +119,6 @@ return list;
             this.jdbcTemplate.execute("call grabCoupon1('"+userid+"','"+batch_id+"')");
             return 1;
         }catch (Exception e){
-            e.printStackTrace();
             System.out.println("-----秒杀失败-----");
             redisTemplate.opsForValue().increment(batch_id);
             return 0;
