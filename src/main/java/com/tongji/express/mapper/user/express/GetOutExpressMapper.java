@@ -12,6 +12,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface GetOutExpressMapper {
 
-    @Select("select * from Box where cupboard_id=#{id} and code=#{code}")
+    @Select("select * from Box where cupboard_id=#{id} and code=#{code} and rownum=1")
     Box getBoxInfo(String id,String code);
 }

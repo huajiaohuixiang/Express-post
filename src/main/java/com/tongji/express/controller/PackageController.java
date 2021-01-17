@@ -18,6 +18,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
@@ -78,19 +79,16 @@ public class PackageController {
 
     @Autowired
     PackInWarehouseService packInWarehouseService;
-
+    @Autowired
+    JdbcTemplate jdbcTemplate;
     @PostMapping("/packInWare")
     @ResponseBody
     public Date packInWarehouse(@RequestBody InWarehouseRecord inWarehouseRecord) {
         java.util.Date date=new java.util.Date();
-        java.sql.Date sqlDate=new java.sql.Date(date.getTime());
-        inWarehouseRecord.setInDate(sqlDate);
-        System.out.println(inWarehouseRecord.getInDate());
         try {
-            packInWarehouseService.packInWarehouse(inWarehouseRecord);
+            jdbcTemplate.execute("call PACKINWARE("+"'"+inWarehouseRecord.getPackageID()+"','"+inWarehouseRecord.getEmployeeID()+"','"+inWarehouseRecord.getWarehouseID()+"')");
             return date;
-        }
-        catch (Exception e){
+        }catch (Exception e){
             e.printStackTrace();
             return null;
         }
@@ -131,7 +129,7 @@ public class PackageController {
     @PostMapping("/packInBox")
     @ResponseBody
     public State packageInBox(@RequestBody InBoxRecord inBoxRecord){
-        try{
+        /*try{
             if(inBoxService.packageInBox(inBoxRecord).getResult().equals("success"))
             {
                 System.out.println(inBoxRecord.getCode());
@@ -159,12 +157,17 @@ public class PackageController {
                 ResponseEntity<String> apiResponse = restTemplate.postForEntity(url, httpEntity, String.class);
                 return State.success;
             }
-            return State.fail;
+            return State.fail;*/
+
+        try {
+            jdbcTemplate.execute("call PACKINBOX("+"'"+inBoxRecord.getPackageID()+"','"+inBoxRecord.getCupboardID()+
+                    "','"+inBoxRecord.getX()+"','"+inBoxRecord.getY()+"','"
+                    +inBoxRecord.getEmployeeID()+"','"+inBoxService.getlinkNo()+"')");
+            return State.success;
         }catch (Exception e){
             e.printStackTrace();
             return State.fail;
         }
-
     }
 
     @Autowired
